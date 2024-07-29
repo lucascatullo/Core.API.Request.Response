@@ -12,7 +12,7 @@ public class ExceptionHandler
 
         if (ex is IControlledException)
         {
-            var exception = ex as IControlledException;
+            var exception = (ex as IControlledException)!;
             response.Success = false;
             response.ErrorCode = exception.ErrorCode;
             response.ErrorMessage = exception.Message;
