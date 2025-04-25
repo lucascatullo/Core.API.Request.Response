@@ -17,10 +17,10 @@ public class ExceptionHandler
     /// <param name="request">Request that produced the error.</param>
     /// <param name="exceptionLogger">This action is runned over the exception.</param>
     /// <returns>Response of type T if no exception is threw.</returns>
-    public static T Handle<T>(System.Exception ex, object? request = null, Action<System.Exception, object?>? exceptionLogger = null) where T : BaseResponse, new()
+    public static T Handle<T>(System.Exception ex, object? request = null, Action<System.Exception>? exceptionLogger = null) where T : BaseResponse, new()
     {
         var response = new T();
-        exceptionLogger?.Invoke(ex, request);
+        exceptionLogger?.Invoke(ex);
         if (ex is IControlledException)
         {
             var exception = (ex as IControlledException)!;
@@ -48,35 +48,37 @@ public class ExceptionHandler
     /// <returns>Response of type T if no exception is threw.</returns>
     public static T Handle<T>(System.Exception ex, object? request = null, bool logException = false) where T : BaseResponse, new()
         => 
-        Handle<T>(ex, request, (System.Exception e, object? r) =>
+        Handle<T>(ex, request, (System.Exception e) =>
         {
             if (logException)
-                LogException(e, r);
+                LogException(e);
         });
 
-    private static void LogException(System.Exception e, object? request) 
+    private static void LogException(System.Exception e) 
     {
         Log.Logger = new LoggerConfiguration()
             .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
         var stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine("---------------------------------------------------------");
+        stringBuilder.AppendLine("---------------------------------------------------------");
 
         stringBuilder.AppendLine($"Time: {DateTime.UtcNow} UTC.");
-
-        if(request is not null) stringBuilder.AppendLine($"Caused by request: {JsonSerializer.Serialize(request)}");
 
         if (e is IControlledException) 
         {
             var controlledException = (e as IControlledException)!;
             stringBuilder.AppendLine($"Error: {controlledException.DescriptiveCode}.");
             stringBuilder.AppendLine($"Message: {controlledException.Message}");
+            Log.Information(stringBuilder.ToString());
         }
         else
         {
             stringBuilder.AppendLine($"Exception threw: {e.GetType()}");
             stringBuilder.AppendLine($"Message: {e.Message}");
             stringBuilder.AppendLine($"Stacktrace: {e.StackTrace}");
+            Log.Error(stringBuilder.ToString());
         }
     }
 }
