@@ -1,4 +1,7 @@
 ﻿using Core.Api.Request.Response.Response;
+using Core.Api.Request.Response.Response.Base;
+using Core.Api.Request.Response.Response.Collection;
+using Core.Api.Request.Response.Response.SingleResult;
 using Core.API.Request.Response.Response;
 using Microsoft.AspNetCore.Http;
 

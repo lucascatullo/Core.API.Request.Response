@@ -1,6 +1,4 @@
-﻿using Core.API.Request.Response.Request;
-using Core.Models.Manager.Exception;
-using Serilog;
+﻿using Serilog;
 using System.Text;
 
 namespace Core.API.Request.Response.Handler;
@@ -27,7 +25,7 @@ public class ExceptionHandler
     /// Passing <c>null</c> for <paramref name="e"/> will result in a <see cref="NullReferenceException"/> when the method attempts
     /// to access exception members. Consider validating input or configuring Serilog at application startup for better control.
     /// </remarks>
-    public static void LogException(System.Exception e) 
+    public static void LogException(System.Exception e)
     {
         Log.Logger = new LoggerConfiguration()
             .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)

@@ -1,7 +1,6 @@
-﻿
-using Core.API.Request.Response.Request;
+﻿using Core.API.Request.Response.Request;
 
-namespace Core.API.Request.Response.Response;
+namespace Core.Api.Request.Response.Response.SingleResult;
 
 public record RequestInProgressResponse : BaseResponse
 {
@@ -11,7 +10,7 @@ public record RequestInProgressResponse : BaseResponse
     /// </summary>
     /// <param name="socketEndpoint">End point created by event service</param>
     /// <param name="eventId">Id of the created event</param>
-    public RequestInProgressResponse(bool Success, object? Body, bool HasNextPage) : base (Success, Body, null)
+    public RequestInProgressResponse(bool Success, object? Body, bool HasNextPage) : base(Success, Body, null)
     {
     }
     public string SocketEndPoint { get; set; }

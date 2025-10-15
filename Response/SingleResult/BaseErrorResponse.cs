@@ -1,6 +1,7 @@
-﻿namespace Core.API.Request.Response.Response;
+﻿
+namespace Core.Api.Request.Response.Response.Base;
 
-public record BaseErrorResponse : IBaseErrorResponse
+public record BaseErrorResponse
 {
     public bool Success { get => false; }
     public string? ErrorMessage { get; set; }

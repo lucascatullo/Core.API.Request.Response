@@ -1,7 +1,7 @@
 ﻿namespace Core.API.Request.Response.Response;
 
-public interface IBaseSuccessResponse
+public record BaseSuccessResponse
 {
-    public bool Success { get; set; }
+    public bool Success { get; set; } = true;
     public object Body { get; set; }
 }

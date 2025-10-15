@@ -1,4 +1,6 @@
-﻿namespace Core.API.Request.Response.Response;
+﻿using Core.API.Request.Response.Response;
+
+namespace Core.Api.Request.Response.Response.Collection;
 
 record BaseSuccessPaginatedCountResponse : BaseSuccessResponse
 {

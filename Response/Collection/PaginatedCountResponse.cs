@@ -1,6 +1,6 @@
-﻿namespace Core.API.Request.Response.Response;
+﻿namespace Core.Api.Request.Response.Response.Collection;
 
-public record PaginatedCountResponse : PaginatedResponse, IPaginatedCountResponse
+public record PaginatedCountResponse : PaginatedResponse
 {
     public PaginatedCountResponse(bool Success, object? Body, bool HasNextPage, int TotalResults) : base(Success, Body, HasNextPage)
     {
