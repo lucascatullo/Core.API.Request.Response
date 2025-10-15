@@ -2,83 +2,52 @@
 using Core.Models.Manager.Exception;
 using Serilog;
 using System.Text;
-using System.Text.Json;
 
 namespace Core.API.Request.Response.Handler;
 
+/// <summary>
+/// Helper class that centralizes exception logging for the application.
+/// </summary>
+/// <remarks>
+/// This class provides a simple, static helper to persist exception information using Serilog to a file
+/// (configured to write to "logs/log.txt" with daily rolling). Note that each call to <see cref="LogException(System.Exception)"/>
+/// reconfigures <c>Log.Logger</c> and therefore overwrites any previously configured global logger. For production scenarios,
+/// prefer configuring Serilog once at application startup and use a logger instance or <c>Log</c> directly.
+/// </remarks>
 public class ExceptionHandler
 {
-
     /// <summary>
-    /// Handles an exception trow. If is a Controlled exception, this prepares the response of type T for the controller (Use it to generate a descreptive error). If not, the exception is thrown.
+    /// Logs the provided exception to the configured Serilog sink (file "logs/log.txt") including type, message,
+    /// stack trace and a UTC timestamp.
     /// </summary>
-    /// <typeparam name="T">Type of the produced response type.</typeparam>
-    /// <param name="ex">Produced exception.</param>
-    /// <param name="request">Request that produced the error.</param>
-    /// <param name="exceptionLogger">This action is runned over the exception.</param>
-    /// <returns>Response of type T if no exception is threw.</returns>
-    public static T Handle<T>(System.Exception ex, object? request = null, Action<System.Exception>? exceptionLogger = null) where T : BaseResponse, new()
-    {
-        var response = new T();
-        exceptionLogger?.Invoke(ex);
-        if (ex is IControlledException)
-        {
-            var exception = (ex as IControlledException)!;
-            response.Success = false;
-            response.ErrorCode = exception.ErrorCode;
-            response.ErrorMessage = exception.Message;
-            response.FancyError = exception.FancyError;
-            response.Errors = exception.Errors;
-            response.DescriptiveError = exception.DescriptiveCode;
-        }
-        else
-        {
-            throw ex;
-        }
-        return response;
-    }
-
-    /// <summary>
-    /// Handles an exception trow. If is a Controlled exception, this prepares the response of type T for the controller (Use it to generate a descreptive error). If not, the exception is thrown.
-    /// </summary>
-    /// <typeparam name="T">Type of the produced response type.</typeparam>
-    /// <param name="ex">Produced exception.</param>
-    /// <param name="request">Request that produced the error.</param>
-    /// <param name="logException">if the exception is logged using Serilog.</param>
-    /// <returns>Response of type T if no exception is threw.</returns>
-    public static T Handle<T>(System.Exception ex, object? request = null, bool logException = false) where T : BaseResponse, new()
-        => 
-        Handle<T>(ex, request, (System.Exception e) =>
-        {
-            if (logException)
-                LogException(e);
-        });
-
-    private static void LogException(System.Exception e) 
+    /// <param name="e">The exception to log. This parameter must not be <c>null</c>.</param>
+    /// <remarks>
+    /// This method configures <c>Log.Logger</c> with a <see cref="LoggerConfiguration"/> that writes to a rolling file,
+    /// then writes the formatted exception detail produced by <see cref="BuildLog(System.Exception)"/> at error level.
+    /// Passing <c>null</c> for <paramref name="e"/> will result in a <see cref="NullReferenceException"/> when the method attempts
+    /// to access exception members. Consider validating input or configuring Serilog at application startup for better control.
+    /// </remarks>
+    public static void LogException(System.Exception e) 
     {
         Log.Logger = new LoggerConfiguration()
             .WriteTo.File("logs/log.txt", rollingInterval: RollingInterval.Day)
             .CreateLogger();
 
+        Log.Error(BuildLog(e));
+    }
+
+    private static string BuildLog(System.Exception e)
+    {
         var stringBuilder = new StringBuilder();
         stringBuilder.AppendLine("---------------------------------------------------------");
         stringBuilder.AppendLine("---------------------------------------------------------");
 
         stringBuilder.AppendLine($"Time: {DateTime.UtcNow} UTC.");
 
-        if (e is IControlledException) 
-        {
-            var controlledException = (e as IControlledException)!;
-            stringBuilder.AppendLine($"Error: {controlledException.DescriptiveCode}.");
-            stringBuilder.AppendLine($"Message: {controlledException.Message}");
-            Log.Information(stringBuilder.ToString());
-        }
-        else
-        {
-            stringBuilder.AppendLine($"Exception threw: {e.GetType()}");
-            stringBuilder.AppendLine($"Message: {e.Message}");
-            stringBuilder.AppendLine($"Stacktrace: {e.StackTrace}");
-            Log.Error(stringBuilder.ToString());
-        }
+        stringBuilder.AppendLine($"Exception threw: {e.GetType()}");
+        stringBuilder.AppendLine($"Message: {e.Message}");
+        stringBuilder.AppendLine($"Stacktrace: {e.StackTrace}");
+
+        return stringBuilder.ToString();
     }
 }

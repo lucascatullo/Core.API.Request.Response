@@ -22,9 +22,10 @@ public class ExceptionMiddleware(RequestDelegate next)
         }
     }
 
-    private Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var response = ExceptionHandler.Handle<BaseResponse>(exception, context.Request, true);
+        ExceptionHandler.LogException(exception);
+        var response = new BaseResponse(false, null, new Response.FailedResultArgs(500));
         context.Response.ContentType = "application/json";
 
         var result = JsonSerializer.Serialize(response.FormatResponse(context));

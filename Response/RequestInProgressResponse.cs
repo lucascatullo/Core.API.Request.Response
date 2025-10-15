@@ -3,7 +3,7 @@ using Core.API.Request.Response.Request;
 
 namespace Core.API.Request.Response.Response;
 
-public class RequestInProgressResponse : BaseResponse
+public record RequestInProgressResponse : BaseResponse
 {
     private const string CHECK_ENDPOINT_SOURCE = "/api/event/get/";
     /// <summary>
@@ -11,7 +11,7 @@ public class RequestInProgressResponse : BaseResponse
     /// </summary>
     /// <param name="socketEndpoint">End point created by event service</param>
     /// <param name="eventId">Id of the created event</param>
-    public RequestInProgressResponse()
+    public RequestInProgressResponse(bool Success, object? Body, bool HasNextPage) : base (Success, Body, null)
     {
     }
     public string SocketEndPoint { get; set; }

@@ -2,5 +2,5 @@
 
 public interface IPaginatedCountResponse
 {
-    int TotalResults { get; set; }
+    int TotalResults { get; }
 }

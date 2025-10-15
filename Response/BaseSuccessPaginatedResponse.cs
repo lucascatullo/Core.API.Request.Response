@@ -1,6 +1,6 @@
 ﻿namespace Core.API.Request.Response.Response;
 
-class BaseSuccessPaginatedResponse : BaseSuccessResponse
+record BaseSuccessPaginatedResponse : BaseSuccessResponse
 {
     public bool HasNextPage { get; set; }
 }

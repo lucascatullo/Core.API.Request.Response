@@ -3,7 +3,11 @@ using Core.API.Request.Response.Request;
 
 namespace Core.API.Request.Response.Response;
 
-public class PaginatedResponse : BaseResponse, IPaginatedResponse
+public record PaginatedResponse : BaseResponse, IPaginatedResponse
 {
-    public bool HasNextPage { get; set; }
+    public PaginatedResponse(bool Success, object? Body, bool HasNextPage) : base(Success, Body, null) 
+    {
+        this.HasNextPage = HasNextPage;
+    }
+    public bool HasNextPage { get; }
 }

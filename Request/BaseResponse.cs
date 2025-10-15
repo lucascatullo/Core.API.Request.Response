@@ -1,19 +1,40 @@
-﻿using Core.API.Request.Response.Response;
+﻿using Core.Api.Request.Response.Response;
+using Core.API.Request.Response.Response;
 using Microsoft.AspNetCore.Http;
 
 namespace Core.API.Request.Response.Request;
 
-public class BaseResponse : IMultipleError, IBaseErrorResponse, IBaseSuccessResponse
+/// <summary>
+/// Initializes a new instance of <see cref="BaseResponse"/> representing the outcome of a service operation.
+/// </summary>
+/// <param name="Success">True when the operation completed successfully; false when it failed.</param>
+/// <param name="Body">The payload to return on success. Commonly a DTO or primitive; may be <c>null</c> when there is no success payload.</param>
+/// <param name="Error">Optional failure details used to build an error response when <paramref name="Success"/> is <c>false</c>.</param>
+/// <remarks>
+/// This record is a simple, transport-friendly container. For best results place typed success DTOs in <paramref name="Body"/>
+/// and structured error information in <see cref="FailedResultArgs"/> for <paramref name="Error"/>.
+/// </remarks>
+public record BaseResponse(bool Success, object? Body, FailedResultArgs? Error)
 {
-    public bool Success { get; set; }
-    public string? ErrorMessage { get; set; }
-    public ICollection<string>? Errors { get; set; }
-    public string? FancyError { get; set; }
-    public object Body { get; set; }
-    public int ErrorCode { get; set; }
-    public string? DescriptiveError { get; set; }
 
-
+    /// <summary>
+    /// Produces the appropriate HTTP response object for this instance and sets the HTTP status code on the provided <see cref="HttpContext"/>.
+    /// </summary>
+    /// <param name="_httpContext">The current HTTP context. The method sets <c>_httpContext.Response.StatusCode</c> as a side effect.</param>
+    /// <returns>
+    /// On success, returns one of the success DTOs:
+    /// <see cref="BaseSuccessResponse"/>, <see cref="BaseSuccessPaginatedResponse"/>,
+    /// <see cref="BaseSuccessPaginatedCountResponse"/>, or <see cref="SuccessRequestInProgressResponse"/>,
+    /// depending on the concrete subtype. On failure, returns a <see cref="BaseErrorResponse"/> populated from <see cref="FailedResultArgs"/>.
+    /// </returns>
+    /// <remarks>
+    /// Behavior summary:
+    /// - Success: sets status code 200 and returns a success wrapper with <c>Body</c> assigned. If this instance is a paginated or in-progress subtype,
+    ///   the method returns the corresponding specialized success response and may set additional properties (e.g. HasNextPage, TotalResults, SocketEndPoint).
+    /// - In-progress requests: sets status code 202 and returns <see cref="SuccessRequestInProgressResponse"/>.
+    /// - Failure: constructs a <see cref="BaseErrorResponse"/> from <see cref="FailedResultArgs"/> (defaults to 400 when <c>Error</c> is null),
+    ///   sets the response status code to the error code and returns the error object.
+    /// </remarks>
     public object FormatResponse(HttpContext _httpContext)
     {
         if (Success)
@@ -45,28 +66,16 @@ public class BaseResponse : IMultipleError, IBaseErrorResponse, IBaseSuccessResp
         }
         else
         {
-            if (Errors != null && Errors.Count > 0)
+            var error = Error ?? new FailedResultArgs(400);
+            BaseErrorResponse baseErrorResponse = new()
             {
-                BaseMultipleErrors baseMultipleErrors = new();
-                baseMultipleErrors.Errors = Errors;
-                baseMultipleErrors.ErrorCode = ErrorCode;
-                baseMultipleErrors.ErrorMessage = ErrorMessage;
-                baseMultipleErrors.FancyError = FancyError;
-                _httpContext.Response.StatusCode = 400;
-                return baseMultipleErrors;
-            }
-
-            BaseErrorResponse baseErrorResponse = new();
-            baseErrorResponse.FancyError = FancyError;
-            baseErrorResponse.ErrorMessage = ErrorMessage;
-            baseErrorResponse.ErrorCode = ErrorCode;
-            baseErrorResponse.DescriptiveError = DescriptiveError;
+                FancyError = error.FancyError,
+                ErrorMessage = error.ErrorMessage,
+                ErrorCode = error.ErrorCode,
+                DescriptiveError = error.DescriptiveError
+            };
             _httpContext.Response.StatusCode = baseErrorResponse.ErrorCode;
             return baseErrorResponse;
         }
-
-
     }
-
-
 }

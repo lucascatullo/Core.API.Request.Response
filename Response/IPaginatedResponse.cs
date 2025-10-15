@@ -2,5 +2,5 @@
 
 public interface IPaginatedResponse
 {
-    public bool HasNextPage { get; set; }
+    public bool HasNextPage { get;}
 }
