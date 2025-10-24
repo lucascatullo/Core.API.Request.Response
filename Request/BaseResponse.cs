@@ -17,7 +17,7 @@ namespace Core.API.Request.Response.Request;
 /// This record is a simple, transport-friendly container. For best results place typed success DTOs in <paramref name="Body"/>
 /// and structured error information in <see cref="FailedResultArgs"/> for <paramref name="Error"/>.
 /// </remarks>
-public record BaseResponse(bool Success, object? Body, FailedResultArgs? Error)
+public record BaseResponse(bool Success, object? Body, FailedResultArgs? Error = null)
 {
 
     /// <summary>
