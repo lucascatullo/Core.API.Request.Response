@@ -6,8 +6,8 @@
 	  <Nullable>enable</Nullable>
 	  <RootNamespace>Core.Api.Request.Response</RootNamespace>
 	  <PackageId>LucasC1992.Core.Api.Request.Response</PackageId>
-	  <PackageVersion>9.2.1</PackageVersion>
-	  <Version>9.2.1</Version>
+	  <PackageVersion>9.2.2</PackageVersion>
+	  <Version>9.2.2</Version>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <Authors>Lucas Gabriel Catullo</Authors>
   </PropertyGroup>

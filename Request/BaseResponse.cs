@@ -81,4 +81,18 @@ public record BaseResponse(bool Success, object? Body, FailedResultArgs? Error =
             return baseErrorResponse;
         }
     }
+
+    /// <summary>
+    /// Creates a failed <see cref="BaseResponse"/> from the provided <see cref="FailedResultArgs"/>.
+    /// </summary>
+    /// <param name="args">Failure details used to populate the response's <see cref="FailedResultArgs"/>.</param>
+    /// <returns>
+    /// A new <see cref="BaseResponse"/> with <see cref="Success"/> set to <c>false</c>, <see cref="Body"/> set to <c>null</c>,
+    /// and <see cref="Error"/> set to <paramref name="args"/>. Intended as a concise factory for error responses.
+    /// </returns>
+    /// <remarks>
+    /// This is a convenience factory used to produce an error response when only failure details are available.
+    /// It does not modify the incoming <paramref name="args"/> instance and performs no side effects.
+    /// </remarks>
+    public static BaseResponse From(FailedResultArgs args) => new(false, null, args);
 }
