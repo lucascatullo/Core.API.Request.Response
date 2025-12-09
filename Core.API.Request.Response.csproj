@@ -1,21 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFramework>net9.0</TargetFramework>
+	  <TargetFramework>net10.0</TargetFramework>
 	  <ImplicitUsings>enable</ImplicitUsings>
 	  <Nullable>enable</Nullable>
 	  <RootNamespace>Core.Api.Request.Response</RootNamespace>
 	  <PackageId>LucasC1992.Core.Api.Request.Response</PackageId>
-	  <PackageVersion>9.2.1</PackageVersion>
-	  <Version>9.2.1</Version>
+	  <PackageVersion>10.0.0</PackageVersion>
+	  <Version>10.0.0</Version>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <Authors>Lucas Gabriel Catullo</Authors>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
-    <PackageReference Include="Serilog" Version="4.2.0" />
-    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Serilog" Version="4.3.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
   </ItemGroup>
 
 </Project>
