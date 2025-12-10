@@ -1,11 +1,10 @@
-﻿using Core.Api.Request.Response.Response;
-using Core.Api.Request.Response.Response.Base;
+﻿using Core.Api.Request.Response.Response.Base;
 using Core.Api.Request.Response.Response.Collection;
 using Core.Api.Request.Response.Response.SingleResult;
 using Core.API.Request.Response.Response;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.API.Request.Response.Request;
+namespace Core.Api.Request.Response.Response;
 
 /// <summary>
 /// Initializes a new instance of <see cref="BaseResponse"/> representing the outcome of a service operation.

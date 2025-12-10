@@ -1,6 +1,4 @@
-﻿using Core.API.Request.Response.Request;
-
-namespace Core.Api.Request.Response.Response.SingleResult;
+﻿namespace Core.Api.Request.Response.Response.SingleResult;
 
 public record RequestInProgressResponse : BaseResponse
 {

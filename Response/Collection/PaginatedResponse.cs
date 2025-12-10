@@ -1,6 +1,4 @@
-﻿using Core.API.Request.Response.Request;
-
-namespace Core.Api.Request.Response.Response.Collection;
+﻿namespace Core.Api.Request.Response.Response.Collection;
 
 public record PaginatedResponse : BaseResponse
 {

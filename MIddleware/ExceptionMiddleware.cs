@@ -1,6 +1,6 @@
 ﻿
+using Core.Api.Request.Response.Response;
 using Core.API.Request.Response.Handler;
-using Core.API.Request.Response.Request;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
@@ -25,7 +25,7 @@ public class ExceptionMiddleware(RequestDelegate next)
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         ExceptionHandler.LogException(exception);
-        var response = new BaseResponse(false, null, new Response.FailedResultArgs(500));
+        var response = new BaseResponse(false, null, new FailedResultArgs(500));
         context.Response.ContentType = "application/json";
 
         var result = JsonSerializer.Serialize(response.FormatResponse(context));
